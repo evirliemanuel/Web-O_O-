@@ -2,10 +2,19 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
 
 const productRouts = require('./api/routes/products');
 const ordersRouts = require('./api/routes/orders');
-const user = require('./api/routes/myusers');
+
+// mongoose.connect("mongodb+srv://node-shop:" + process.env.MONGO_ATLAS_PW + "@node-rest-shop-qn0it.mongodb.net/test", {
+//     useMongoClient: true
+// });
+
+mongoose.connect("mongodb://node-shop:" + process.env.MONGO_ATLAS_PW + "@node-rest-shop-shard-00-00-qn0it.mongodb.net:27017,node-rest-shop-shard-00-01-qn0it.mongodb.net:27017,node-rest-shop-shard-00-02-qn0it.mongodb.net:27017/test?ssl=true&replicaSet=node-rest-shop-shard-0&authSource=admin"),{
+    useMongoClient: true
+};
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended : false}));
@@ -24,7 +33,6 @@ next();
 });
 app.use('/products', productRouts);
 app.use('/orders', ordersRouts);
-app.use('/user', user);
 
 app.use((request, response, next)=>{
     const error = new Error('Not found');
